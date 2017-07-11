@@ -1,35 +1,52 @@
 (function() {
     function GameAnalyzer() {
         var _content = {
-                container: createElement('div', {}, { 
-                    backgroundColor: 'black', 
-                    height:'600px', 
-                    width: '600px'
-                }),
                 onYouTubeIframeAPIReady: APIReady,
+                get analyzer() {
+                    loadAfter();
+                    return _container;
+                }
             },
+            _container = createElement('div', {}, { 
+                backgroundColor: 'black', 
+                height:'600px', 
+                width: '600px'
+            }),
             _player;
         
+        var videoPlayer = createElement('div', {
+            id: ('video-' + Math.floor(Math.random() * 1000000))
+        });
+        _container.appendChild(videoPlayer);
+
         var testAction = createAction('test');
-        _content.container.appendChild(testAction);
+        _container.appendChild(testAction);
 
         return _content;
-    }
 
-    function APIReady() {
-        console.log('DEBUG:: hit');
-        _player = new YT.Player('video-placeholder', {
-            width: 600,
-            height: 400,
-            videoId: 'Xa0Q0J5tOP0',
-            playerVars: {
-                color: 'white',
-                playlist: 'taJ60kskkns,FG0fTKAqZ5g'
-            },
-            events: {
-                onReady: videoReady
-            }
-        });
+        function APIReady() {
+            console.log('DEBUG:: hit');
+            console.log(videoPlayer.id);
+            _player = new YT.Player(videoPlayer.id, {
+                width: 600,
+                height: 400,
+                videoId: 'Xa0Q0J5tOP0',
+                playerVars: {
+                    color: 'white',
+                    playlist: 'taJ60kskkns,FG0fTKAqZ5g'
+                },
+                events: {
+                    onReady: videoReady
+                }
+            });
+        }
+
+        function loadAfter() {
+            var script = document.createElement("script");
+            script.src = "https://www.youtube.com/iframe_api";
+            script.type = "text/javascript";
+            document.getElementsByTagName("head")[0].appendChild(script);
+        }
     }
 
     function videoReady() {

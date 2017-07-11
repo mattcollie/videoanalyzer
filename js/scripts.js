@@ -6,5 +6,5 @@ var analyzer = new GameAnalyzer();
 var onYouTubeIframeAPIReady = analyzer.onYouTubeIframeAPIReady;
 function loaded() {
     console.log('DEBUG:: loaded()');
-    document.getElementById('analyzer').appendChild(analyzer.container);
+    document.getElementById('analyzer').appendChild(analyzer.analyzer);
 }

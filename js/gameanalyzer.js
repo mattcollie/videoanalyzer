@@ -1,17 +1,39 @@
 (function() {
     function GameAnalyzer() {
         var _content = {
-            container: createElement('div', {}, { 
-                backgroundColor: 'black', 
-                height:'600px', 
-                width: '600px'
-            })
-        };
+                container: createElement('div', {}, { 
+                    backgroundColor: 'black', 
+                    height:'600px', 
+                    width: '600px'
+                }),
+                onYouTubeIframeAPIReady: APIReady,
+            },
+            _player;
         
         var testAction = createAction('test');
         _content.container.appendChild(testAction);
 
-        return _content.container;
+        return _content;
+    }
+
+    function APIReady() {
+        console.log('DEBUG:: hit');
+        _player = new YT.Player('video-placeholder', {
+            width: 600,
+            height: 400,
+            videoId: 'Xa0Q0J5tOP0',
+            playerVars: {
+                color: 'white',
+                playlist: 'taJ60kskkns,FG0fTKAqZ5g'
+            },
+            events: {
+                onReady: videoReady
+            }
+        });
+    }
+
+    function videoReady() {
+
     }
 
     function createAction(name, action = function defaultAction() { console.log('DEBUGG:: ' + name + ' clicked'); }) {

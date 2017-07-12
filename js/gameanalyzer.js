@@ -5,25 +5,6 @@
             get analyzer() {
                 loadAfter();
                 return _container;
-            },
-            get points() {
-                return {
-                    get kicks() {
-                        return _points.kicks.records.length;
-                    },
-                    get passes() {
-                        return _points.passes.records.length;
-                    },
-                    get trys() {
-                        return _points.trys.records.length;
-                    },
-                    get conversions() {
-                        return _points.conversions.records.length;
-                    },
-                    get score() {
-                        return Object.keys(_points).map(a => (_points[a].records.length * _points[a].value)).reduce((a,b) => a + b, 0);
-                    }
-                };
             }
         },
         _container = createElement('div', {}, { 
@@ -35,7 +16,7 @@
             kicks: { value: 0, records: [] },
             passes: { value: 0, records: [] },
             trys: { value: 5, records: [] },
-            conversions: { value: 3, records: [] }
+            conversions: { value: 2, records: [] }
         },
         _player;
 
@@ -45,14 +26,6 @@
         buildActions();
 
         return _content;
-
-        function bindKeyPress(key, callback) {
-            document.addEventListener('keypress', function(e) {
-                if(e.keyCode == key)
-                    callback();
-            });
-            return callback;
-        }
 
         function APIReady() {
             console.log('DEBUG:: hit');
@@ -71,13 +44,6 @@
             });
         }
 
-        function loadAfter() {
-            var script = document.createElement("script");
-            script.src = "https://www.youtube.com/iframe_api";
-            script.type = "text/javascript";
-            document.getElementsByTagName("head")[0].appendChild(script);
-        }
-
         function buildActions() {
             var actionContainer = createElement();
             _container.appendChild(actionContainer);
@@ -87,7 +53,7 @@
                 var time = { time: _player.getCurrentTime() };
                 _points.trys.records.push(time);
                 var content = createElement();
-                content.appendChild(createAction('try: ' + _points.trys.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
+                content.appendChild(createAction('Try: ' + _points.trys.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
                     _player.seekTo(time.time);
                 }));
                 actionContainer.appendChild(content);
@@ -101,12 +67,26 @@
                 }));
                 actionContainer.appendChild(content);
             })));
-            _container.appendChild(createAction('Show Score', function() { alert('score: ' + _content.points.score); }));
         }
     }
 
     function videoReady() {
 
+    }
+
+    function loadAfter() {
+        var script = document.createElement("script");
+        script.src = "https://www.youtube.com/iframe_api";
+        script.type = "text/javascript";
+        document.getElementsByTagName("head")[0].appendChild(script);
+    }
+
+    function bindKeyPress(key, callback) {
+        document.addEventListener('keypress', function(e) {
+            if(e.keyCode == key)
+                callback();
+        });
+        return callback;
     }
 
     function createAction(name, action = function defaultAction() { console.log('DEBUGG:: ' + name + ' clicked'); }) {

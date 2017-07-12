@@ -1,52 +1,68 @@
 (function() {
     function GameAnalyzer() {
         var _content = {
-                onYouTubeIframeAPIReady: APIReady,
-                get analyzer() {
-                    loadAfter();
-                    return _container;
-                },
-                get points() {
-                    return {
-                        get kicks() {
-                            return _points.kicks.records.length;
-                        },
-                        get passes() {
-                            return _points.passes.records.length;
-                        },
-                        get trys() {
-                            return _points.trys.records.length;
-                        },
-                        get conversions() {
-                            return _points.conversions.records.length;
-                        },
-                        get score() {
-                            return Object.keys(_points).map(a => (_points[a].records.length * _points[a].value)).reduce((a,b) => a + b, 0);
-                        }
-                    };
-                }
+            onYouTubeIframeAPIReady: APIReady,
+            get analyzer() {
+                loadAfter();
+                return _container;
             },
-            _container = createElement('div', {}, { 
-                backgroundColor: 'black', 
-                height:'600px', 
-                width: '600px'
-            }),
-            _points = {
-                kicks: { value: 0, records: [] },
-                passes: { value: 0, records: [] },
-                trys: { value: 5, records: [] },
-                conversions: { value: 3, records: [] }
-            },
-            _player;
-        
+            get points() {
+                return {
+                    get kicks() {
+                        return _points.kicks.records.length;
+                    },
+                    get passes() {
+                        return _points.passes.records.length;
+                    },
+                    get trys() {
+                        return _points.trys.records.length;
+                    },
+                    get conversions() {
+                        return _points.conversions.records.length;
+                    },
+                    get score() {
+                        return Object.keys(_points).map(a => (_points[a].records.length * _points[a].value)).reduce((a,b) => a + b, 0);
+                    }
+                };
+            }
+        },
+        _container = createElement('div', {}, { 
+            backgroundColor: 'black', 
+            height:'600px', 
+            width: '600px'
+        }),
+        _points = {
+            kicks: { value: 0, records: [] },
+            passes: { value: 0, records: [] },
+            trys: { value: 5, records: [] },
+            conversions: { value: 3, records: [] }
+        },
+        _player;
+
         var videoPlayer = createElement('div', { id: ('video-' + Math.floor(Math.random() * 1000000)) });
         _container.appendChild(videoPlayer);
+        
+        var actionContainer = createElement();
+
+        _container.appendChild(actionContainer);
         _container.appendChild(createAction('Kick', function() { _points.kicks.records.push({time: _player.getCurrentTime()}); }));
         _container.appendChild(createAction('Pass', function() { _points.passes.records.push({time: _player.getCurrentTime()}); }));
-        _container.appendChild(createAction('Try', function() { _points.trys.records.push({time: _player.getCurrentTime()}); }));
-        _container.appendChild(createAction('Conversion', function() { _points.conversions.records.push({time: _player.getCurrentTime()}); }));
+        _container.appendChild(createAction('Try', function() { 
+            var time = {time: _player.getCurrentTime()};
+            _points.trys.records.push(time); 
+            var content = createElement();
+            content.appendChild(createAction('try: ' + _points.trys.records.length, function() { 
+                _player.seekTo(time.time);
+            }))
+            actionContainer.appendChild(content);
+        }));
+        _container.appendChild(createAction('Conversion', function() { 
+            _points.conversions.records.push({time: _player.getCurrentTime()}); 
+
+        }));
         _container.appendChild(createAction('Show Score', function() { alert('score: ' + _content.points.score); }));
-        
+
+
         return _content;
 
         function APIReady() {

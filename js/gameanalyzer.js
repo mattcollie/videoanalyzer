@@ -43,27 +43,38 @@
         _container.appendChild(videoPlayer);
         
         var actionContainer = createElement();
-
         _container.appendChild(actionContainer);
         _container.appendChild(createAction('Kick', function() { _points.kicks.records.push({time: _player.getCurrentTime()}); }));
         _container.appendChild(createAction('Pass', function() { _points.passes.records.push({time: _player.getCurrentTime()}); }));
-        _container.appendChild(createAction('Try', function() { 
-            var time = {time: _player.getCurrentTime()};
-            _points.trys.records.push(time); 
+        _container.appendChild(createAction('Try', bindKeyPress(49, function() { 
+            var time = { time: _player.getCurrentTime() };
+            _points.trys.records.push(time);
             var content = createElement();
-            content.appendChild(createAction('try: ' + _points.trys.records.length, function() { 
+            content.appendChild(createAction('try: ' + _points.trys.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
                 _player.seekTo(time.time);
-            }))
+            }));
             actionContainer.appendChild(content);
-        }));
-        _container.appendChild(createAction('Conversion', function() { 
-            _points.conversions.records.push({time: _player.getCurrentTime()}); 
-
-        }));
+        })));
+        _container.appendChild(createAction('Conversion', bindKeyPress(50, function() { 
+            var time = { time: _player.getCurrentTime() };
+            _points.conversions.records.push(time);
+            var content = createElement();
+            content.appendChild(createAction('Conversion: ' + _points.conversions.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
+                _player.seekTo(time.time);
+            }));
+            actionContainer.appendChild(content);
+        })));
         _container.appendChild(createAction('Show Score', function() { alert('score: ' + _content.points.score); }));
 
-
         return _content;
+
+        function bindKeyPress(key, callback) {
+            document.addEventListener('keypress', function(e) {
+                if(e.keyCode == key)
+                    callback();
+            });
+            return callback;
+        }
 
         function APIReady() {
             console.log('DEBUG:: hit');

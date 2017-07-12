@@ -45,28 +45,33 @@
         }
 
         function buildActions() {
-            var actionContainer = createElement();
-            _container.appendChild(actionContainer);
-            _container.appendChild(createAction('Kick', function() { _points.kicks.records.push({time: _player.getCurrentTime()}); }));
-            _container.appendChild(createAction('Pass', function() { _points.passes.records.push({time: _player.getCurrentTime()}); }));
-            _container.appendChild(createAction('Try', bindKeyPress(49, function() { 
+            var actionPanel = createElement('div', { class: 'panel panel-primary' });
+            var actionHeading = createElement('div', { class: 'panel-heading' });
+            actionHeading.textContent = 'Actions';
+            var actionBody = createElement('div', { class: 'panel-body' });
+            actionPanel.appendChild(actionHeading);
+            actionPanel.appendChild(actionBody);
+            actionBody.appendChild(createAction('Kick', { class: 'btn btn-default'}, function() { _points.kicks.records.push({time: _player.getCurrentTime()}); }));
+            actionBody.appendChild(createAction('Pass', { class: 'btn btn-default'}, function() { _points.passes.records.push({time: _player.getCurrentTime()}); }));
+            actionBody.appendChild(createAction('Try', { class: 'btn btn-default'}, bindKeyPress(49, function() { 
                 var time = { time: _player.getCurrentTime() };
                 _points.trys.records.push(time);
                 var content = createElement();
-                content.appendChild(createAction('Try: ' + _points.trys.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
+                content.appendChild(createAction('Try: ' + _points.trys.records.length + ' time: ' + Math.floor(time.time) + 's', { class: 'btn btn-default'}, function() { 
                     _player.seekTo(time.time);
                 }));
-                actionContainer.appendChild(content);
+                actionPanel.appendChild(content);
             })));
-            _container.appendChild(createAction('Conversion', bindKeyPress(50, function() { 
+            actionBody.appendChild(createAction('Conversion', { class: 'btn btn-default'}, bindKeyPress(50, function() { 
                 var time = { time: _player.getCurrentTime() };
                 _points.conversions.records.push(time);
                 var content = createElement();
-                content.appendChild(createAction('Conversion: ' + _points.conversions.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
+                content.appendChild(createAction('Conversion: ' + _points.conversions.records.length + ' time: ' + Math.floor(time.time) + 's', { class: 'btn btn-default'}, function() { 
                     _player.seekTo(time.time);
                 }));
-                actionContainer.appendChild(content);
+                actionPanel.appendChild(content);
             })));
+            _container.appendChild(actionPanel);
         }
     }
 
@@ -89,13 +94,8 @@
         return callback;
     }
 
-    function createAction(name, action = function defaultAction() { console.log('DEBUGG:: ' + name + ' clicked'); }) {
-        var element = createElement('div', {}, { 
-            backgroundColor: 'yellow', 
-            height:'60px', 
-            width: '60px',
-            cursor: 'pointer'
-        });
+    function createAction(name, attributes, action = function defaultAction() { console.log('DEBUGG:: ' + name + ' clicked'); }) {
+        var element = createElement('div', attributes);
         element.textContent = name;
         element.addEventListener('click', action);
         return element;

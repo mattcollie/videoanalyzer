@@ -42,29 +42,7 @@
         var videoPlayer = createElement('div', { id: ('video-' + Math.floor(Math.random() * 1000000)) });
         _container.appendChild(videoPlayer);
         
-        var actionContainer = createElement();
-        _container.appendChild(actionContainer);
-        _container.appendChild(createAction('Kick', function() { _points.kicks.records.push({time: _player.getCurrentTime()}); }));
-        _container.appendChild(createAction('Pass', function() { _points.passes.records.push({time: _player.getCurrentTime()}); }));
-        _container.appendChild(createAction('Try', bindKeyPress(49, function() { 
-            var time = { time: _player.getCurrentTime() };
-            _points.trys.records.push(time);
-            var content = createElement();
-            content.appendChild(createAction('try: ' + _points.trys.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
-                _player.seekTo(time.time);
-            }));
-            actionContainer.appendChild(content);
-        })));
-        _container.appendChild(createAction('Conversion', bindKeyPress(50, function() { 
-            var time = { time: _player.getCurrentTime() };
-            _points.conversions.records.push(time);
-            var content = createElement();
-            content.appendChild(createAction('Conversion: ' + _points.conversions.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
-                _player.seekTo(time.time);
-            }));
-            actionContainer.appendChild(content);
-        })));
-        _container.appendChild(createAction('Show Score', function() { alert('score: ' + _content.points.score); }));
+        buildActions();
 
         return _content;
 
@@ -98,6 +76,32 @@
             script.src = "https://www.youtube.com/iframe_api";
             script.type = "text/javascript";
             document.getElementsByTagName("head")[0].appendChild(script);
+        }
+
+        function buildActions() {
+            var actionContainer = createElement();
+            _container.appendChild(actionContainer);
+            _container.appendChild(createAction('Kick', function() { _points.kicks.records.push({time: _player.getCurrentTime()}); }));
+            _container.appendChild(createAction('Pass', function() { _points.passes.records.push({time: _player.getCurrentTime()}); }));
+            _container.appendChild(createAction('Try', bindKeyPress(49, function() { 
+                var time = { time: _player.getCurrentTime() };
+                _points.trys.records.push(time);
+                var content = createElement();
+                content.appendChild(createAction('try: ' + _points.trys.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
+                    _player.seekTo(time.time);
+                }));
+                actionContainer.appendChild(content);
+            })));
+            _container.appendChild(createAction('Conversion', bindKeyPress(50, function() { 
+                var time = { time: _player.getCurrentTime() };
+                _points.conversions.records.push(time);
+                var content = createElement();
+                content.appendChild(createAction('Conversion: ' + _points.conversions.records.length + ' time: ' + Math.floor(time.time) + 's', function() { 
+                    _player.seekTo(time.time);
+                }));
+                actionContainer.appendChild(content);
+            })));
+            _container.appendChild(createAction('Show Score', function() { alert('score: ' + _content.points.score); }));
         }
     }
 

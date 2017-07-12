@@ -8,7 +8,6 @@
             }
         },
         _container = createElement('div', {}, { 
-            backgroundColor: 'black', 
             height:'600px', 
             width: '600px'
         }),
@@ -45,6 +44,9 @@
         }
 
         function buildActions() {
+            var resultPanel = createElement('div', { class: 'panel panel-primary' });
+            var resultBody = createElement('div', { class: 'panel-primary' });
+            resultPanel.appendChild(resultBody);
             var actionPanel = createElement('div', { class: 'panel panel-primary' });
             var actionHeading = createElement('div', { class: 'panel-heading' });
             actionHeading.textContent = 'Actions';
@@ -60,7 +62,7 @@
                 content.appendChild(createAction('Try: ' + _points.trys.records.length + ' time: ' + Math.floor(time.time) + 's', { class: 'btn btn-default'}, function() { 
                     _player.seekTo(time.time);
                 }));
-                actionPanel.appendChild(content);
+                resultBody.appendChild(content);
             })));
             actionBody.appendChild(createAction('Conversion', { class: 'btn btn-default'}, bindKeyPress(50, function() { 
                 var time = { time: _player.getCurrentTime() };
@@ -69,9 +71,10 @@
                 content.appendChild(createAction('Conversion: ' + _points.conversions.records.length + ' time: ' + Math.floor(time.time) + 's', { class: 'btn btn-default'}, function() { 
                     _player.seekTo(time.time);
                 }));
-                actionPanel.appendChild(content);
+                resultBody.appendChild(content);
             })));
             _container.appendChild(actionPanel);
+            _container.appendChild(resultPanel);
         }
     }
 
